@@ -22,6 +22,13 @@ fn approx_mandlebrot_test(c: Complex<f64>, limit: u32) -> Option<u32> {
     None
 }
 
+/// Parse a delimited string into a pair
+/// `s`should be a string delimited by `separator`
+/// the format should be <left><sep><right> any other
+/// form will be rejected
+/// if so, the result will be `Some((l,r))` where `l` and `r`
+/// hold the values of `T` parsed from the input
+/// and invalid parse results in `None`
 fn parse_pair<T: FromStr>(s: &str, separator: char) -> Option<(T,T)> {
     match s.find(separator) {
         None => None,
@@ -36,13 +43,14 @@ fn parse_pair<T: FromStr>(s: &str, separator: char) -> Option<(T,T)> {
 
 #[test]
 fn test_parse_pair() {
-    assert_eq!(parse_pair::<i32>("",        ','), None);
-    assert_eq!(parse_pair::<i32>("10,",     ','), None);
-    assert_eq!(parse_pair::<i32>(",10",     ','), None);
-    assert_eq!(parse_pair::<i32>("10,20",   ','), Some((10, 20)));
-    assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
-    assert_eq!(parse_pair::<f64>("0.5x",    'x'), None);
-    assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
+    assert_eq!(parse_pair::<i32>("",          ','), None);
+    assert_eq!(parse_pair::<i32>("10,",       ','), None);
+    assert_eq!(parse_pair::<i32>(",10",       ','), None);
+    assert_eq!(parse_pair::<i32>("10,20",     ','), Some((10, 20)));
+    assert_eq!(parse_pair::<i32>("10,20xy",   ','), None);
+    assert_eq!(parse_pair::<f64>("0.5x",      'x'), None);
+    assert_eq!(parse_pair::<f64>("0.5x1.5",   'x'), Some((0.5, 1.5)));
+    assert_eq!(parse_pair::<f64>("0.5 x 1.5", 'x'), None);
 }
 
 fn main() {
