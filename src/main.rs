@@ -15,7 +15,6 @@ use iron::status;
 use logger::Logger;
 use num::Complex;
 use router::Router;
-use std::io::Cursor;
 use std::str::FromStr;
 use urlencoded::UrlEncodedQuery;
 
@@ -225,12 +224,10 @@ fn get_mandelbrot_image(request: &mut Request) -> IronResult<Response> {
 
     let mut buf: Vec<u8> = Vec::new();
 
-    // create a new lexical scope so the mutable borrow handed to the Cursor is dropped before 
+    // create a new lexical scope so the mutable borrow handed to the encoder will be dropped
     // we send pass buf to set_mut
     {
-        let cur = Cursor::new(&mut buf);
-
-        let encoder = PNGEncoder::new(cur);
+        let encoder = PNGEncoder::new(&mut buf);
 
         match encoder.encode(&pixels, bounds.0 as u32, bounds.1 as u32, ColorType::Gray(8)) {
             Err(e) => {
